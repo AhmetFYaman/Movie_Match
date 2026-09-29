@@ -1,6 +1,16 @@
 # Deploy MovieMatch to Vercel
 
-The app uses standard Next.js hosting. It has not been deployed by this change.
+The app uses standard Next.js hosting in the Vercel `movie-match` project, connected to the `Movie_Match` GitHub repository.
+
+## Live routing
+
+- Public URL: https://ahmetyaman.site/movie-match
+- App origin: https://movie-match-beige.vercel.app/movie-match
+- `src/lib/paths.ts` defines `/movie-match` for both Next.js `basePath` and browser API requests.
+- The separate Portfolio repository rewrites `/movie-match/:path*` to this app origin, including scripts, images, and API requests. The main domain remains attached to the portfolio; no DNS changes are needed.
+- Pushes to each repository's `main` branch deploy that project independently. Keep the prefix and portfolio rewrite in sync if either changes.
+
+## Recreating the deployment
 
 1. Create your GitHub repository and push the project. Inspect the staged files first: `.env.local`, `node_modules`, `.next`, and the backup archive must not be included. Only `.env.example` should be committed from the environment files.
 2. Import that repository into Vercel. Select **Next.js**, the folder containing `package.json` as the root, and **Node.js 24.x**. Keep the default output directory; build with `npm run build` and install with `npm ci`.

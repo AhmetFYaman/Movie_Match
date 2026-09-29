@@ -2,6 +2,8 @@
 
 A title-first movie recommender built with Next.js, TypeScript, React, plain CSS, and TMDB. No machine learning, account system, or database is required to run it.
 
+[Live demo](https://ahmetyaman.site/movie-match)
+
 ## Run locally
 
 Use Node.js 24.x (also pinned for Vercel).
@@ -9,7 +11,7 @@ Use Node.js 24.x (also pinned for Vercel).
 1. Run `npm install`.
 2. Copy `.env.example` to `.env.local` if the local file does not already exist.
 3. Set `TMDB_READ_ACCESS_TOKEN` to your TMDB Read Access Token. Keep it private.
-4. Run `npm run dev` and open http://127.0.0.1:3000/.
+4. Run `npm run dev` and open http://127.0.0.1:3000/movie-match.
 
 Your existing local token stays in the ignored `.env.local` file. All authenticated requests run on the server.
 
