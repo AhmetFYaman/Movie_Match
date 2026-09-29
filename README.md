@@ -20,7 +20,7 @@ Your existing local token stays in the ignored `.env.local` file. All authentica
 - Never name a secret `NEXT_PUBLIC_*`, put it in `next.config.ts`'s `env` field, return it in an API response, or put it under `public/`.
 - Deploy as a Next.js server application. Do not upload the entire project as a public static directory. Use a production build, not the development server.
 - `src/lib/recommend.ts` is marked `server-only`: Next.js fails the build if a client component imports it. Production browser source maps are explicitly disabled.
-- `.gitignore` does not remove files already committed or erase history. This folder is not currently a Git repository, so existing remote history could not be audited. Check the staged changes before your first push.
+- `.gitignore` does not remove files already committed or erase history. This application is now in the `Movie_Match` Git repository. Check staged changes before pushing; only the placeholder `.env.example` should be tracked.
 - Rotate any credential previously posted publicly or committed. The token previously pasted into chat should also be rotated before publishing; place the replacement only in local/hosting secrets.
 
 Frontend HTML, CSS, JavaScript, and your app's API URLs remain visible to visitors. A public GitHub repository also exposes committed source. Keep the repository private if you do not want to share source code. Environment variables protect credentials, not source-code secrecy or API quota: a public launch may also need hosting-level rate limiting.
@@ -34,7 +34,8 @@ Tests run with Node's `react-server` condition so the server-only module can be 
 - **Mood:** skip the title and enter an optional genre, year, and target rating. Open Advanced preferences before searching to set their importance; those choices stay selected after the search.
 - **Match weights:** optional, collapsed Advanced controls with five presets and percentage sliders. Lock values you want to preserve. Available weights total 100%.
 - **Movie details:** click a result to see five similarity bars, the effective weights, and a plain-language explanation.
-- **Surprise me:** randomly opens one of the top six matches.
+- **Surprise me:** weighted randomness across the fetched pool, favoring genre/studio connections while reducing top-three dominance and avoiding recent repeats.
+- **Where to watch:** country-specific options in movie details, provided by JustWatch through TMDB; US is the selectable default.
 - **Find movies like this:** starts another recommendation search from a result.
 
 The dark streaming-style UI uses a rotating TMDB backdrop, a 600ms crossfade, poster hover states, and Lenis scrolling. Rotation can be paused. Reduced-motion preferences disable rotation, smooth scrolling, crossfades, and hover scaling.
@@ -80,7 +81,7 @@ npm run typecheck
 npm run build
 ```
 
-18 tests cover scoring formulas, Mood input handling, rounding, locked weights, missing data, safe API errors, stale-request guards, candidate filtering, concurrency, and Endgame → Paddington → Endgame isolation. See [REFORMAT_CHANGELOG.md](REFORMAT_CHANGELOG.md) for the earlier reformat and [UI_POLISH_CHANGELOG.md](UI_POLISH_CHANGELOG.md) for the UI fixes.
+23 tests cover scoring, Mood inputs, locked weights, missing data, API errors, stale requests, candidate filtering, concurrency, recommendation isolation, Surprise selection, and watch providers. See [ITERATION_NOTES.md](ITERATION_NOTES.md) for the latest file-by-file changes and [BROWSER_LIBRARY_PLAN.md](BROWSER_LIBRARY_PLAN.md) for the proposed watched library.
 
 ## Deploy to Vercel
 

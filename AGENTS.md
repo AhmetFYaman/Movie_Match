@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Canonical project folder
+
+Work in this Movie_Match repository. The older sibling folder, Movie-Book Recommendation Engine, is a preserved copy, not the active project. Keep credentials in ignored .env.local; never commit them. Keep changes in small, descriptive commits when requested.

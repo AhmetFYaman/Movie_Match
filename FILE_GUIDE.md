@@ -1,5 +1,9 @@
 # File guide and interview walkthrough
 
+## Repository move and latest additions
+
+The active repository is now `Movie_Match`. Read [ITERATION_NOTES.md](ITERATION_NOTES.md) for the slower motion, broader Surprise selection, compact movie context, and watch-provider integration. New files are `src/lib/surprise.ts`, `src/components/WatchProviders.tsx`, `src/app/api/watch/route.ts`, and their two test files. There are now 23 tests. [BROWSER_LIBRARY_PLAN.md](BROWSER_LIBRARY_PLAN.md) describes the unimplemented browser-only library.
+
 ## Latest UI polish
 
 [UI_POLISH_CHANGELOG.md](UI_POLISH_CHANGELOG.md) lists every file changed for dropdown layering, larger text, centered SVG icons, mode transitions, animated ranking, and pre-search Mood sliders. The only new application components are `Icon.tsx` (shared SVGs) and `ResultGrid.tsx` (card-position animations). [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md) covers hosting setup. The scoring suite now has fourteen tests, eighteen across the project.
