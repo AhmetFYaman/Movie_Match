@@ -38,7 +38,7 @@ export function ResultGrid({ children }: { children: ReactNode }) {
               },
               { transform: "translate(0, 0)" },
             ],
-            { duration: 280, easing: "ease-out" },
+            { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
           ),
         );
       }

@@ -12,6 +12,7 @@ import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { Icon } from "@/components/Icon";
 import { ResultGrid } from "@/components/ResultGrid";
 import { LatestRequest } from "@/lib/latest-request";
+import { pickSurprise } from "@/lib/surprise";
 import {
   genres,
   defaultWeights,
@@ -59,6 +60,8 @@ export default function MovieFinder() {
   const [moodWeights, setMoodWeights] = useState<Weights>(defaultWeights);
   const [selected, setSelected] = useState<number | null>(null);
   const [picked, setPicked] = useState("");
+  const [surpriseReason, setSurpriseReason] = useState("");
+  const recentSurprises = useRef<number[]>([]);
   const [lastRequest, setLastRequest] = useState({ params: "", preferences });
   const requests = useRef(new LatestRequest());
   const lenis = useLenis();
@@ -128,7 +131,7 @@ export default function MovieFinder() {
       lenis.scrollTo(target, {
         offset: -88,
         immediate: reduced,
-        duration: 0.7,
+        duration: 1.05,
       });
     } else
       document
@@ -162,6 +165,8 @@ export default function MovieFinder() {
     });
   }
   async function load(params: string, fallback: Preferences) {
+    recentSurprises.current = [];
+    setSurpriseReason("");
     const request = requests.current.start();
     setBusy(true);
     setLoaded(false);
@@ -463,14 +468,19 @@ export default function MovieFinder() {
                     <button
                       type="button"
                       onClick={() => {
-                        const result =
-                          ranked[
-                            Math.floor(
-                              Math.random() * Math.min(6, ranked.length),
-                            )
-                          ];
-                        setSelected(result.movie.id);
-                        setPicked("Tonight’s pick: " + result.movie.title);
+                        const pick = pickSurprise(
+                          ranked,
+                          preferences,
+                          recentSurprises.current,
+                        );
+                        if (!pick) return;
+                        recentSurprises.current = [
+                          ...recentSurprises.current,
+                          pick.result.movie.id,
+                        ].slice(-5);
+                        setSelected(pick.result.movie.id);
+                        setSurpriseReason(pick.reason);
+                        setPicked("Tonight’s pick: " + pick.result.movie.title);
                       }}
                     >
                       Surprise me
@@ -640,8 +650,13 @@ export default function MovieFinder() {
       </main>
       {detail && (
         <MovieDetails
+          key={detail.movie.id}
           result={detail}
-          onClose={() => setSelected(null)}
+          surpriseReason={surpriseReason}
+          onClose={() => {
+            setSelected(null);
+            setSurpriseReason("");
+          }}
           onSelect={chooseMovie}
         />
       )}

@@ -79,6 +79,11 @@ select {
 }
 select {
   cursor: pointer;
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23bdbdc5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
 }
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -269,16 +274,16 @@ nav button {
 }
 /* Short, plain-CSS transitions: no animation framework or delayed form actions. */
 .mode-enter {
-  animation: mode-enter 0.38s ease-out;
+  animation: mode-enter 0.65s ease-out;
 }
 .result-grid {
-  animation: results-enter 0.4s ease-out;
+  animation: results-enter 0.65s ease-out;
 }
 .search-dropdown {
   animation: results-enter 0.18s ease-out;
 }
 .detail-sheet[open] {
-  animation: mode-enter 0.25s ease-out;
+  animation: mode-enter 0.5s ease-out;
 }
 @keyframes mode-enter {
   from {
@@ -553,6 +558,9 @@ nav button {
 .result-actions button {
   font-size: 12px;
   padding: 10px 14px;
+}
+.result-actions select {
+  padding-right: 40px;
 }
 .movie-grid {
   display: grid;
@@ -893,19 +901,96 @@ input[type="range"]:disabled {
   background: #222;
 }
 .sheet-heading {
-  display: flex;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) minmax(170px, 0.85fr);
+  gap: 18px;
   align-items: center;
   padding-right: 24px;
   margin-bottom: 24px;
 }
 .sheet-heading .poster-image {
-  width: 108px;
-  height: 162px;
+  width: 88px;
+  height: 132px;
   flex-shrink: 0;
 }
 .sheet-heading h2 {
   margin: 8px 0;
+}
+.sheet-title {
+  min-width: 0;
+}
+.watch-options {
+  border-left: 1px solid var(--border);
+  padding-left: 16px;
+  font-size: 11px;
+  color: #bdbdc5;
+}
+.watch-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.watch-heading select {
+  font-size: 11px;
+  padding: 4px 28px 4px 9px;
+  background-position: right 7px center;
+  max-width: 105px;
+}
+.watch-options p {
+  margin: 8px 0;
+}
+.watch-summary {
+  color: var(--text);
+}
+.watch-summary > span {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.watch-options small {
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+}
+.watch-options summary,
+.factor-context summary {
+  cursor: pointer;
+}
+.watch-options button {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+.factor-context {
+  margin: 4px 0 7px;
+  color: #b4bdca;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.factor-context p {
+  margin: 5px 0;
+}
+.factor-context summary span {
+  color: var(--accent);
+  white-space: nowrap;
+}
+.sheet-content > .surprise-note {
+  color: #a4d4ff;
+  border-left: 2px solid var(--accent);
+  padding-left: 10px;
+}
+@media (max-width: 650px) {
+  .sheet-heading {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+  .watch-options {
+    grid-column: 1 / -1;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 12px 0 0;
+  }
 }
 .sheet-content > p {
   color: #bdbdc5;
