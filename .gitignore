@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+.env*
+!.env.example
+# Private certificates, hosting metadata, and local-only archives/reports
+*.pem
+*.key
+*.p12
+*.pfx
+.vercel/
+.netlify/
+previous-dashboard-backup.zip
+lighthouse-*.json
+playwright-report/
+test-results/
+*.log

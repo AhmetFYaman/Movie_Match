@@ -1,0 +1,34 @@
+{
+  "name": "movie-match",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "node --conditions=react-server --experimental-strip-types --test tests/*.test.ts",
+    "format": "prettier --write src tests package.json tsconfig.json eslint.config.mjs README.md FILE_GUIDE.md"
+  },
+  "dependencies": {
+    "lenis": "^1.3.26",
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "16.3.6",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.0"
+  }
+}
