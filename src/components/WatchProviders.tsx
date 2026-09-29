@@ -1,4 +1,5 @@
 "use client";
+import { basePath } from "@/lib/paths";
 import { useEffect, useState } from "react";
 type WatchData = {
   groups: { label: string; names: string[] }[];
@@ -12,7 +13,7 @@ export function WatchProviders({ movieId }: { movieId: number }) {
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`/api/watch?id=${movieId}&region=${region}`, {
+    fetch(`${basePath}/api/watch?id=${movieId}&region=${region}`, {
       signal: controller.signal,
     })
       .then(async (response) => {
@@ -78,36 +79,30 @@ export function WatchProviders({ movieId }: { movieId: number }) {
         <p>No availability listed for this country.</p>
       ) : (
         <>
-          <p className="watch-summary">
-            <span>{data.groups[0].label}</span>
-            {data.groups[0].names.slice(0, 2).join(" · ")}
-            {data.groups[0].names.length > 2
-              ? ` +${data.groups[0].names.length - 2}`
-              : ""}
-          </p>
-          <details>
-            <summary>All watch options</summary>
-            {data.groups.map((group) => (
-              <p key={group.label}>
-                <strong>{group.label}</strong>
-                <br />
-                {group.names.join(" · ")}
-              </p>
-            ))}
-          </details>
-          {data.link && (
-            <a href={data.link} target="_blank" rel="noreferrer">
-              Open watch links ↗
+          {data.link ? (
+            <a
+              className="watch-choice"
+              href={data.link}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`See ${data.groups[0].names[0]} watch options on TMDB`}
+            >
+              {data.groups[0].names[0]} <span aria-hidden="true">↗</span>
             </a>
+          ) : (
+            <p className="watch-choice">{data.groups[0].names[0]}</p>
           )}
+          <span className="watch-kind">
+            {data.groups[0].label} · Suggested option
+          </span>
         </>
       )}
       <small>
-        Availability via{" "}
+        Via{" "}
         <a href="https://www.justwatch.com/" target="_blank" rel="noreferrer">
           JustWatch
         </a>{" "}
-        / TMDB. May change.
+        / TMDB
       </small>
     </aside>
   );

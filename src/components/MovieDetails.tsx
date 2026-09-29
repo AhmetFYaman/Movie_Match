@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
 import {
   factors,
@@ -24,6 +24,8 @@ export function MovieDetails({
   surpriseReason?: string;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const [showScores, setShowScores] = useState(false);
+  const scoreId = useId();
   const lenis = useLenis();
   useEffect(() => {
     const element = dialog.current;
@@ -50,13 +52,8 @@ export function MovieDetails({
           `${Math.floor(year / 10) * 10}–${Math.floor(year / 10) * 10 + 9} · released ${year}`,
         ]
       : [],
-    rating: [
-      `${movie.vote_average.toFixed(1)}/10 TMDB · ${movie.vote_count.toLocaleString("en-US")} votes`,
-    ],
-    cast: [
-      ...(movie.director ? [movie.director.name + " (director)"] : []),
-      ...(movie.cast ?? []).map((person) => person.name),
-    ],
+    director: movie.director ? [movie.director.name] : [],
+    cast: (movie.cast ?? []).map((person) => person.name),
     studio: (movie.companies ?? []).map((company) => company.name),
   };
   return (
@@ -98,42 +95,67 @@ export function MovieDetails({
         <p>{movie.overview || "No synopsis is available for this movie."}</p>
         <h3>Why this match?</h3>
         <p className="reason">{reason}</p>
-        <div className="breakdown">
-          {factors.map((key) => (
-            <div key={key}>
-              <div>
-                <span>{labels[key]}</span>
-                <span className="muted">
-                  {Math.round(breakdown[key] * 100)}% similarity ·{" "}
-                  {effective[key]}% weight
-                </span>
-              </div>
-              {context[key].length > 2 ? (
-                <details className="factor-context">
-                  <summary>
-                    {context[key].slice(0, 2).join(" · ")}{" "}
-                    <span>+{context[key].length - 2} more</span>
-                  </summary>
-                  <p>{context[key].join(" · ")}</p>
-                </details>
-              ) : (
-                <p className="factor-context">
-                  {context[key].join(" · ") || "Not listed by TMDB"}
-                </p>
-              )}
-              <meter
-                min={0}
-                max={1}
-                value={breakdown[key]}
-                aria-label={labels[key] + " similarity"}
-              />
+        <dl className="movie-facts">
+          {(
+            [
+              ["Genres", context.genre, context.genre.length],
+              ["Era", context.era, 1],
+              ["Director", context.director, 1],
+              ["Cast", context.cast, 3],
+              ["Studio", context.studio, 2],
+            ] as [string, string[], number][]
+          ).map(([label, items, preview]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>
+                <FactorContext items={items} label={label} preview={preview} />
+              </dd>
             </div>
           ))}
+        </dl>
+        <button
+          type="button"
+          className="score-toggle"
+          aria-expanded={showScores}
+          aria-controls={scoreId}
+          onClick={() => setShowScores((value) => !value)}
+        >
+          Match breakdown{" "}
+          <span aria-hidden="true">{showScores ? "−" : "+"}</span>
+        </button>
+        <div
+          id={scoreId}
+          className="context-reveal"
+          data-expanded={showScores}
+          aria-hidden={!showScores}
+          inert={!showScores}
+        >
+          <div>
+            <div className="breakdown score-details">
+              {factors.map((key) => (
+                <div key={key}>
+                  <div className="factor-heading">
+                    <span>{labels[key]}</span>
+                    <span className="muted">
+                      {Math.round(breakdown[key] * 100)}% similarity ·{" "}
+                      {effective[key]}% weight
+                    </span>
+                  </div>
+                  <meter
+                    min={0}
+                    max={1}
+                    value={breakdown[key]}
+                    aria-label={labels[key] + " similarity"}
+                  />
+                </div>
+              ))}
+              <p className="muted">
+                Similarity × your weights. Not a prediction of enjoyment. Rating
+                based on {movie.vote_count.toLocaleString("en-US")} TMDB votes.
+              </p>
+            </div>
+          </div>
         </div>
-        <p className="muted">
-          Match = the five similarities multiplied by your weights. It is not a
-          prediction of how much you will like the movie.
-        </p>
         <div className="sheet-actions">
           <button
             type="button"
@@ -156,5 +178,64 @@ export function MovieDetails({
         </div>
       </div>
     </dialog>
+  );
+}
+
+// Keep the preview in place; reveal only the remaining names, never a second copy.
+function FactorContext({
+  items,
+  label,
+  preview = 2,
+}: {
+  items: string[];
+  label: string;
+  preview?: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const id = useId();
+  const unique = [...new Set(items)];
+  const remaining = unique.slice(preview);
+  return (
+    <div className="factor-context">
+      <div className="context-preview">
+        <span>{unique.slice(0, preview).join(", ") || "Not listed"}</span>
+        {remaining.length > 0 && (
+          <button
+            type="button"
+            className="context-toggle"
+            aria-expanded={expanded}
+            aria-controls={id}
+            aria-label={`${expanded ? "Show fewer" : "Show all"} ${label.toLowerCase()}`}
+            onClick={() => setExpanded((value) => !value)}
+          >
+            {expanded ? "Less" : `+${remaining.length}`}
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              aria-hidden="true"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        )}
+      </div>
+      {remaining.length > 0 && (
+        <div
+          id={id}
+          className="context-reveal"
+          data-expanded={expanded}
+          aria-hidden={!expanded}
+          inert={!expanded}
+        >
+          <div>
+            <div className="context-names">{remaining.join(", ")}</div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

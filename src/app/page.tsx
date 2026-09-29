@@ -11,7 +11,9 @@ import { MovieImage } from "@/components/MovieImage";
 import { HeroBackdrop } from "@/components/HeroBackdrop";
 import { Icon } from "@/components/Icon";
 import { ResultGrid } from "@/components/ResultGrid";
+import { Disclosure } from "@/components/Disclosure";
 import { LatestRequest } from "@/lib/latest-request";
+import { basePath } from "@/lib/paths";
 import { pickSurprise } from "@/lib/surprise";
 import {
   genres,
@@ -86,7 +88,7 @@ export default function MovieFinder() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch("/api/movies?browse=true", { signal: controller.signal })
+    fetch(basePath + "/api/movies?browse=true", { signal: controller.signal })
       .then(async (response) => {
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
@@ -177,7 +179,7 @@ export default function MovieFinder() {
     setLastRequest({ params, preferences: fallback });
     setSelected(null);
     try {
-      const response = await fetch("/api/recommend?" + params, {
+      const response = await fetch(basePath + "/api/recommend?" + params, {
         signal: AbortSignal.any([request.signal, AbortSignal.timeout(110000)]),
       });
       const data = await response.json();
@@ -386,8 +388,7 @@ export default function MovieFinder() {
               </form>
             )}
             {seed && !busy && (
-              <details className="seed-details">
-                <summary>Cast & studios</summary>
+              <Disclosure className="seed-details" title="Cast & studios">
                 <p>
                   <strong>Cast:</strong>{" "}
                   {seed.cast?.map((person) => person.name).join(", ") ||
@@ -402,7 +403,7 @@ export default function MovieFinder() {
                   {seed.companies?.map((company) => company.name).join(", ") ||
                     "Not available"}
                 </p>
-              </details>
+              </Disclosure>
             )}
           </div>
           {!seed && hero && (

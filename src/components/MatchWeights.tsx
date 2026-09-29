@@ -1,5 +1,6 @@
 "use client";
 import { useId, useState, type CSSProperties } from "react";
+import { Disclosure } from "./Disclosure";
 import {
   factors,
   labels,
@@ -27,15 +28,15 @@ export function MatchWeights({
     ? factors.filter((key) => key !== "cast" && key !== "studio")
     : factors;
   return (
-    <details className={"weights-panel" + (mood ? " mood-weights" : "")}>
-      <summary>
-        {mood ? "Advanced preferences" : "Match weights"}{" "}
-        <span>
-          {mood
-            ? "Choose what matters most"
-            : "Advanced · fine-tune your recommendations"}
-        </span>
-      </summary>
+    <Disclosure
+      className={"weights-panel" + (mood ? " mood-weights" : "")}
+      title={mood ? "Advanced preferences" : "Match weights"}
+      hint={
+        mood
+          ? "Choose what matters most"
+          : "Advanced · fine-tune your recommendations"
+      }
+    >
       <div className="preset-row" data-lenis-prevent>
         {Object.entries(presets)
           .filter(([name]) => !mood || name !== "Same people")
@@ -164,6 +165,6 @@ export function MatchWeights({
         Total: {factors.reduce((sum, key) => sum + weights[key], 0)}% · Changes
         update matches instantly.
       </p>
-    </details>
+    </Disclosure>
   );
 }

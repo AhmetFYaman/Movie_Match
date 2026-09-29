@@ -10,7 +10,9 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Movie Match",
+  metadataBase: new URL("https://ahmetyaman.site"),
+  title: "MovieMatch — Ahmet Yaman",
+  alternates: { canonical: "/movie-match" },
   description: "Find a movie with a simple, explainable match score.",
 };
 

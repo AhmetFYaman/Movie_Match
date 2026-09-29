@@ -1,4 +1,5 @@
 "use client";
+import { basePath } from "@/lib/paths";
 import { useEffect, useRef, useState } from "react";
 import { LatestRequest } from "@/lib/latest-request";
 import type { Movie } from "@/lib/scoring";
@@ -39,7 +40,7 @@ export function SearchCombobox({
       setError("");
       try {
         const response = await fetch(
-          "/api/search?q=" + encodeURIComponent(key),
+          basePath + "/api/search?q=" + encodeURIComponent(key),
           {
             signal: AbortSignal.any([
               request.signal,
@@ -159,59 +160,63 @@ export function SearchCombobox({
           Find matches
         </button>
       </form>
-      {expanded && (
-        <div className="search-dropdown" data-lenis-prevent>
-          <ul id="movie-options" role="listbox" aria-label="Movie suggestions">
-            {results.map((movie, index) => (
-              <li
-                key={movie.id}
-                id={"movie-option-" + index}
-                role="option"
-                aria-selected={active === index}
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => choose(movie)}
-                onMouseEnter={() => setActive(index)}
+      <div
+        className="search-dropdown"
+        data-lenis-prevent
+        data-expanded={expanded}
+        aria-hidden={!expanded}
+        inert={!expanded}
+      >
+        <ul id="movie-options" role="listbox" aria-label="Movie suggestions">
+          {results.map((movie, index) => (
+            <li
+              key={movie.id}
+              id={"movie-option-" + index}
+              role="option"
+              aria-selected={active === index}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => choose(movie)}
+              onMouseEnter={() => setActive(index)}
+            >
+              <MovieImage movie={movie} small />
+              <span>
+                <span className="suggestion-title">
+                  <Highlight text={movie.title} query={query.trim()} />
+                </span>
+                <span className="muted">
+                  {movie.release_date.slice(0, 4) || "Year unknown"}
+                </span>
+              </span>
+              <span className="suggestion-arrow" aria-hidden="true">
+                ↗
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div role="status" className="search-status">
+          {status === "searching" && "Searching…"}
+          {status === "done" &&
+            !results.length &&
+            'No movies found for "' + query.trim() + '". Try another title.'}
+          {status === "error" && (
+            <>
+              {error}{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  setStatus("searching");
+                  setRetry((value) => value + 1);
+                }}
               >
-                <MovieImage movie={movie} small />
-                <span>
-                  <span className="suggestion-title">
-                    <Highlight text={movie.title} query={query.trim()} />
-                  </span>
-                  <span className="muted">
-                    {movie.release_date.slice(0, 4) || "Year unknown"}
-                  </span>
-                </span>
-                <span className="suggestion-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </li>
-            ))}
-          </ul>
-          <div role="status" className="search-status">
-            {status === "searching" && "Searching…"}
-            {status === "done" &&
-              !results.length &&
-              'No movies found for "' + query.trim() + '". Try another title.'}
-            {status === "error" && (
-              <>
-                {error}{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStatus("searching");
-                    setRetry((value) => value + 1);
-                  }}
-                >
-                  Retry search
-                </button>
-              </>
-            )}
-            {status === "done" &&
-              results.length > 0 &&
-              "Use ↑ ↓ and Enter to choose a movie."}
-          </div>
+                Retry search
+              </button>
+            </>
+          )}
+          {status === "done" &&
+            results.length > 0 &&
+            "Use ↑ ↓ and Enter to choose a movie."}
         </div>
-      )}
+      </div>
     </div>
   );
 }
